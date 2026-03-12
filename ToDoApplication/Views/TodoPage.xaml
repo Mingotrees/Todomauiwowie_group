@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoApplication.Views.TodoPage"
+             Title="My Todos">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+
+        <Label Grid.Row="0" Text="My Tasks" FontSize="28" FontAttributes="Bold" Margin="0,10"/>
+
+        <CollectionView Grid.Row="1" x:Name="TodosCollection" ItemsSource="{Binding TodoItems}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,5" Padding="15" CornerRadius="10" BorderColor="#E0E0E0">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsCompleted}"
+                                      CheckedChanged="OnItemCheckedChanged"/>
+                            <VerticalStackLayout Grid.Column="1" Margin="10,0">
+                                <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="{Binding Description}" FontSize="13" TextColor="Gray"/>
+                                <Label Text="{Binding DueDate, StringFormat='Due: {0:MMM dd, yyyy}'}"
+                                       FontSize="12" TextColor="#6200EE"/>
+                            </VerticalStackLayout>
+                            <Button Grid.Column="2" Text="🗑" BackgroundColor="Transparent"
+                                    Clicked="OnDeleteClicked" CommandParameter="{Binding .}"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2" Text="+ Add New Task" Clicked="OnAddTaskClicked"
+                BackgroundColor="#6200EE" TextColor="White" Margin="0,10"/>
+
+    </Grid>
+</ContentPage>
