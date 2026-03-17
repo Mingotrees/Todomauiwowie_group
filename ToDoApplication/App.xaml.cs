@@ -2,6 +2,7 @@
 using ToDoApplication.Views;
 
 namespace ToDoApplication;
+// Wanako kasabot
 
 public partial class App : Application
 {
