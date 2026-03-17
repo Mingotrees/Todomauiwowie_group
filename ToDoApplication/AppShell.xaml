@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell x:Class="ToDoApplication.AppShell"
-       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:views="clr-namespace:ToDoApplication.Views"
-       Title="ToDoApplication">
+<Shell
+    x:Class="ToDoApplication.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:ToDoApplication.Views">
 
     <TabBar>
-        <ShellContent Title="Todos"     ContentTemplate="{DataTemplate views:TodoPage}"/>
-        <ShellContent Title="Completed" ContentTemplate="{DataTemplate views:CompletedPage}"/>
-        <ShellContent Title="Profile"   ContentTemplate="{DataTemplate views:ProfilePage}"/>
-    </TabBar>
+        <ShellContent
+            Title="Todos"
+            ContentTemplate="{DataTemplate views:TodoPage}" />
 
+        <ShellContent
+            Title="Completed"
+            ContentTemplate="{DataTemplate views:CompletedPage}" />
+
+        <ShellContent
+            Title="Profile"
+            ContentTemplate="{DataTemplate views:ProfilePage}" />
+    </TabBar>
 </Shell>

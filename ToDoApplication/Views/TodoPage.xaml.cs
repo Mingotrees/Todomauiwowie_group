@@ -5,7 +5,8 @@ namespace ToDoApplication.Views;
 
 public partial class TodoPage : ContentPage
 {
-    public List<TodoItem> TodoItems => DummyData.TodoItems.Where(t => t.status.ToString() != "Completed").ToList();
+    public List<TodoItem> TodoItems =>
+        DummyData.TodoItems.Where(t => t.status != "Completed").ToList();
 
     public TodoPage()
     {
@@ -24,37 +25,42 @@ public partial class TodoPage : ContentPage
     {
         if (sender is CheckBox cb && cb.BindingContext is TodoItem item)
         {
-            item.status = e.Value.ToString();
+            item.status = e.Value ? "Completed" : "Pending";
             OnAppearing();
         }
     }
 
-    private async void OnDeleteClicked(object sender, EventArgs e)
+    private void OnDeleteClicked(object sender, EventArgs e)
     {
-        if (sender is Button btn && btn.CommandParameter is TodoItem item)
+        if (sender is ImageButton imageButton &&
+            imageButton.CommandParameter is TodoItem item)
         {
-            bool confirm = await DisplayAlert("Delete", $"Delete '{item.item_name}'?", "Yes", "No");
-            if (confirm)
-            {
-                DummyData.TodoItems.Remove(item);
-                OnAppearing();
-            }
+            DummyData.TodoItems.Remove(item);
+            OnAppearing();
         }
     }
 
     private async void OnAddTaskClicked(object sender, EventArgs e)
     {
         string title = await DisplayPromptAsync("New Task", "Enter task title:");
-        if (!string.IsNullOrWhiteSpace(title))
+
+        if (string.IsNullOrWhiteSpace(title))
+            return;
+
+        string description = await DisplayPromptAsync("New Task", "Enter task description:");
+
+        if (string.IsNullOrWhiteSpace(description))
+            description = "No description";
+
+        DummyData.TodoItems.Add(new TodoItem
         {
-            DummyData.TodoItems.Add(new TodoItem
-            {
-                item_id = DummyData.TodoItems.Count + 1,
-                item_name = title,
-                item_description = "No description",
-                status = "Pending",
-            });
-            OnAppearing();
-        }
+            item_id = DummyData.TodoItems.Count + 1,
+            item_name = title,
+            item_description = description,
+            status = "Pending",
+            user_id = 1
+        });
+
+        OnAppearing();
     }
 }
