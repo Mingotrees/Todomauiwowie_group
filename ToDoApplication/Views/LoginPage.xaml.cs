@@ -1,7 +1,7 @@
 using ToDoApplication.Services;
 
 namespace ToDoApplication.Views;
-using ToDoApplication.Services;
+
 public partial class LoginPage : ContentPage
 {
     public LoginPage()
@@ -11,20 +11,23 @@ public partial class LoginPage : ContentPage
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        string email = EmailEntry.Text;
-        string password = PasswordEntry.Text;
-        
-        if (email == DummyData.CurrentUser.email && password == DummyData.CurrentUser.password)
+        string usernameOrEmail = UsernameOrEmailEntry.Text ?? "";
+        string password = PasswordEntry.Text ?? "";
+
+        bool isValid = await LocalAuthService.LoginAsync(usernameOrEmail, password);
+
+        if (isValid)
         {
-            Application.Current.MainPage = new AppShell();
+            await DisplayAlert("Success", "Login successful.", "OK");
+            Application.Current!.MainPage = new AppShell();
         }
         else
         {
-            await DisplayAlert("Error", "Invalid email or password", "OK");
+            await DisplayAlert("Error", "Invalid username/email or password.", "OK");
         }
     }
 
-    private async void OnSignupClicked(object sender, EventArgs e)
+    private async void GoToSignupClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new SignupPage());
     }

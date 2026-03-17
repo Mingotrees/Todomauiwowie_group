@@ -1,23 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ToDoApplication.Views.LoginPage"
              Title="Login">
 
-    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+    <VerticalStackLayout Padding="20" Spacing="15">
 
-        <Label Text="Welcome Back" FontSize="32" FontAttributes="Bold" HorizontalOptions="Center"/>
-        <Label Text="Sign in to continue" FontSize="16" TextColor="Gray" HorizontalOptions="Center"/>
+        <Label Text="Login"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
 
-        <Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email"/>
-        <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True"/>
+        <Entry x:Name="UsernameOrEmailEntry"
+               Placeholder="Username or Email" />
 
-        <Button Text="Login" Clicked="OnLoginClicked" BackgroundColor="#6200EE" TextColor="White"/>
+        <Entry x:Name="PasswordEntry"
+               Placeholder="Password"
+               IsPassword="True" />
 
-        <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-            <Label Text="Don't have an account?" VerticalOptions="Center"/>
-            <Button Text="Sign Up" Clicked="OnSignupClicked" BackgroundColor="Transparent" TextColor="#6200EE"/>
-        </HorizontalStackLayout>
+        <Button Text="Login"
+                Clicked="OnLoginClicked"
+                BackgroundColor="#6200EE"
+                TextColor="White" />
+
+        <Button Text="Go to Sign Up"
+                Clicked="GoToSignupClicked"
+                BackgroundColor="Transparent"
+                TextColor="#6200EE" />
 
     </VerticalStackLayout>
 </ContentPage>

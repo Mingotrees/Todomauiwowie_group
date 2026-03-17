@@ -1,3 +1,5 @@
+using ToDoApplication.Services;
+
 namespace ToDoApplication.Views;
 
 public partial class SignupPage : ContentPage
@@ -9,26 +11,26 @@ public partial class SignupPage : ContentPage
 
     private async void OnSignupClicked(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(UsernameEntry.Text) ||
-            string.IsNullOrWhiteSpace(EmailEntry.Text) ||
-            string.IsNullOrWhiteSpace(PasswordEntry.Text))
+        string username = UsernameEntry.Text ?? "";
+        string email = EmailEntry.Text ?? "";
+        string password = PasswordEntry.Text ?? "";
+
+        if (string.IsNullOrWhiteSpace(username) ||
+            string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password))
         {
-            await DisplayAlert("Error", "Please fill in all fields", "OK");
+            await DisplayAlert("Error", "Please enter username, email, and password.", "OK");
             return;
         }
 
-        if (PasswordEntry.Text != ConfirmPasswordEntry.Text)
-        {
-            await DisplayAlert("Error", "Passwords do not match", "OK");
-            return;
-        }
+        await LocalAuthService.SaveUserAsync(username, email, password);
+        await DisplayAlert("Success", "Account created successfully.", "OK");
 
-        await DisplayAlert("Success", "Account created successfully!", "OK");
-        await Navigation.PopAsync();
+        Application.Current!.MainPage = new NavigationPage(new LoginPage());
     }
 
-    private async void OnLoginClicked(object sender, EventArgs e)
+    private async void GoToLoginClicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        await Navigation.PushAsync(new LoginPage());
     }
 }

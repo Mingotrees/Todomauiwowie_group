@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ToDoApplication.Views.CompletedPage"
@@ -6,24 +6,72 @@
 
     <Grid RowDefinitions="Auto,*" Padding="16">
 
-        <Label Grid.Row="0" Text="Completed Tasks" FontSize="28" FontAttributes="Bold" Margin="0,10"/>
+        <Label Grid.Row="0"
+               Text="Completed Tasks"
+               FontSize="28"
+               FontAttributes="Bold"
+               Margin="0,10" />
 
-        <CollectionView Grid.Row="1" x:Name="CompletedCollection">
+        <CollectionView Grid.Row="1"
+                        x:Name="CompletedCollection"
+                        ItemsSource="{Binding CompletedItems}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="15" CornerRadius="10" BorderColor="#E0E0E0">
-                        <Grid ColumnDefinitions="Auto,*">
-                            <Label Grid.Column="0" Text="✅" FontSize="20" VerticalOptions="Center"/>
-                            <VerticalStackLayout Grid.Column="1" Margin="10,0">
-                                <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold"
-                                       TextDecorations="Strikethrough"/>
-                                <Label Text="{Binding Description}" FontSize="13" TextColor="Gray"/>
-                                <Label Text="{Binding DueDate, StringFormat='Completed by: {0:MMM dd, yyyy}'}"
-                                       FontSize="12" TextColor="Green"/>
+                    <Frame Margin="0,5"
+                           Padding="15"
+                           CornerRadius="10"
+                           BorderColor="#E0E0E0">
+
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                              ColumnSpacing="10">
+
+                            <!-- display only -->
+                            <CheckBox Grid.Column="0"
+                                      VerticalOptions="Center"
+                                      IsChecked="True"
+                                      IsEnabled="False" />
+
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center">
+                                <Label Text="{Binding item_name}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+
+                                <Label Text="{Binding item_description}"
+                                       FontSize="13"
+                                       TextColor="Gray" />
+
+                                <Label Text="{Binding status}"
+                                       FontSize="12"
+                                       TextColor="Green" />
                             </VerticalStackLayout>
+
+                            <!-- move back to pending -->
+                            <Button Grid.Column="2"
+                                    Text="Undo"
+                                    FontSize="12"
+                                    BackgroundColor="#6200EE"
+                                    TextColor="White"
+                                    Padding="10,4"
+                                    Clicked="OnUndoClicked"
+                                    CommandParameter="{Binding .}" />
+
+                            <ImageButton Grid.Column="3"
+                                         Source="trash.png"
+                                         WidthRequest="22"
+                                         HeightRequest="22"
+                                         Aspect="AspectFit"
+                                         Padding="0"
+                                         BackgroundColor="Transparent"
+                                         VerticalOptions="Center"
+                                         Clicked="OnDeleteClicked"
+                                         CommandParameter="{Binding .}" />
                         </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-        </CollectionView></Grid>
+        </CollectionView>
+
+    </Grid>
 </ContentPage>
