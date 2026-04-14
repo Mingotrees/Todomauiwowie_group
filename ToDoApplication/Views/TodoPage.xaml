@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ToDoApplication.Views.TodoPage"
-             Title="My Todos">
+             >
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="16">
 
@@ -50,11 +50,9 @@
                             </VerticalStackLayout>
 
                             <ImageButton Grid.Column="2"
-                                         Source="trash.png"
-                                         WidthRequest="22"
-                                         HeightRequest="22"
-                                         Aspect="AspectFit"
-                                         Padding="0"
+                                         Source="trash.svg"
+                                         WidthRequest="16"
+                                         HeightRequest="16"
                                          BackgroundColor="Transparent"
                                          VerticalOptions="Center"
                                          Clicked="OnDeleteClicked"

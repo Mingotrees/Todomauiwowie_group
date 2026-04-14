@@ -2,15 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ToDoApplication.Views.ProfilePage"
-             Title="Profile">
+             >
 
     <VerticalStackLayout Padding="30" Spacing="20">
-
-        <Label Text="Profile" FontSize="28" FontAttributes="Bold"/>
-
         <Frame CornerRadius="60" HeightRequest="120" WidthRequest="120"
                HorizontalOptions="Center" BackgroundColor="#6200EE" Padding="0">
-            <Label Text="👤" FontSize="60" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Image
+                Source="profile.svg"
+                HeightRequest="64"
+                WidthRequest="64"
+                Aspect="AspectFit"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
         </Frame>
 
         <Label x:Name="UsernameLabel" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center"/>

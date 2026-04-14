@@ -5,8 +5,9 @@ namespace ToDoApplication.Views;
 
 public partial class TodoPage : ContentPage
 {
-    public List<TodoItem> TodoItems =>
-        DummyData.TodoItems.Where(t => t.status != "Completed").ToList();
+    private List<TodoItem> _todoItems = new();
+
+    public List<TodoItem> TodoItems => _todoItems;
 
     public TodoPage()
     {
@@ -14,29 +15,55 @@ public partial class TodoPage : ContentPage
         BindingContext = this;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await RefreshTodosAsync();
+    }
+
+    private async Task RefreshTodosAsync()
+    {
+        int userId = LocalAuthService.GetCurrentUserId();
+        if (userId <= 0)
+        {
+            _todoItems = new List<TodoItem>();
+            TodosCollection.ItemsSource = _todoItems;
+            return;
+        }
+
+        _todoItems = await TodoApiService.GetItemsAsync("active", userId);
         TodosCollection.ItemsSource = null;
         TodosCollection.ItemsSource = TodoItems;
     }
 
-    private void OnItemCheckedChanged(object sender, CheckedChangedEventArgs e)
+    private async void OnItemCheckedChanged(object sender, CheckedChangedEventArgs e)
     {
         if (sender is CheckBox cb && cb.BindingContext is TodoItem item)
         {
-            item.status = e.Value ? "Completed" : "Pending";
-            OnAppearing();
+            var result = await TodoApiService.ChangeItemStatusAsync(item.item_id, e.Value);
+            if (!result.IsSuccess)
+            {
+                await DisplayAlert("Error", result.Message, "OK");
+                return;
+            }
+
+            await RefreshTodosAsync();
         }
     }
 
-    private void OnDeleteClicked(object sender, EventArgs e)
+    private async void OnDeleteClicked(object sender, EventArgs e)
     {
         if (sender is ImageButton imageButton &&
             imageButton.CommandParameter is TodoItem item)
         {
-            DummyData.TodoItems.Remove(item);
-            OnAppearing();
+            var result = await TodoApiService.DeleteItemAsync(item.item_id);
+            if (!result.IsSuccess)
+            {
+                await DisplayAlert("Error", result.Message, "OK");
+                return;
+            }
+
+            await RefreshTodosAsync();
         }
     }
 
@@ -52,15 +79,20 @@ public partial class TodoPage : ContentPage
         if (string.IsNullOrWhiteSpace(description))
             description = "No description";
 
-        DummyData.TodoItems.Add(new TodoItem
+        int userId = LocalAuthService.GetCurrentUserId();
+        if (userId <= 0)
         {
-            item_id = DummyData.TodoItems.Count + 1,
-            item_name = title,
-            item_description = description,
-            status = "Pending",
-            user_id = 1
-        });
+            await DisplayAlert("Error", "No active session. Please log in again.", "OK");
+            return;
+        }
 
-        OnAppearing();
+        var result = await TodoApiService.AddItemAsync(title, description, userId);
+        if (!result.IsSuccess)
+        {
+            await DisplayAlert("Error", result.Message, "OK");
+            return;
+        }
+
+        await RefreshTodosAsync();
     }
 }

@@ -4,45 +4,48 @@ namespace ToDoApplication.Services
 {
     public static class LocalAuthService
     {
-        private const string UsernameKey = "saved_username";
+        private const string UserIdKey = "saved_user_id";
+        private const string FirstNameKey = "saved_first_name";
+        private const string LastNameKey = "saved_last_name";
         private const string EmailKey = "saved_email";
-        private const string PasswordKey = "saved_password";
 
-        public static async Task SaveUserAsync(string username, string email, string password)
+        public static void SaveSession(int userId, string firstName, string lastName, string email)
         {
-            Preferences.Set(UsernameKey, username);
+            Preferences.Set(UserIdKey, userId);
+            Preferences.Set(FirstNameKey, firstName);
+            Preferences.Set(LastNameKey, lastName);
             Preferences.Set(EmailKey, email);
-            await SecureStorage.Default.SetAsync(PasswordKey, password);
         }
 
-        public static async Task<bool> LoginAsync(string username, string password)
+        public static bool HasSession()
         {
-            string savedUsername = Preferences.Get(UsernameKey, string.Empty);
-            string savedPassword = await SecureStorage.Default.GetAsync(PasswordKey) ?? string.Empty;
-
-            return username == savedUsername && password == savedPassword;
+            return Preferences.Get(UserIdKey, 0) > 0;
         }
 
-        public static string GetSavedUsername()
+        public static int GetCurrentUserId()
         {
-            return Preferences.Get(UsernameKey, string.Empty);
+            return Preferences.Get(UserIdKey, 0);
         }
 
-        public static string GetSavedEmail()
+        public static string GetCurrentEmail()
         {
             return Preferences.Get(EmailKey, string.Empty);
         }
 
-        public static bool HasAccount()
+        public static string GetCurrentDisplayName()
         {
-            return !string.IsNullOrWhiteSpace(Preferences.Get(UsernameKey, string.Empty));
+            string firstName = Preferences.Get(FirstNameKey, string.Empty);
+            string lastName = Preferences.Get(LastNameKey, string.Empty);
+            return string.Join(" ", new[] { firstName, lastName }.Where(value => !string.IsNullOrWhiteSpace(value))).Trim();
         }
 
         public static void Logout()
         {
-            Preferences.Remove(UsernameKey);
+            Preferences.Remove(UserIdKey);
+            Preferences.Remove(FirstNameKey);
+            Preferences.Remove(LastNameKey);
             Preferences.Remove(EmailKey);
-            SecureStorage.Default.Remove(PasswordKey);
         }
     }
 }
+

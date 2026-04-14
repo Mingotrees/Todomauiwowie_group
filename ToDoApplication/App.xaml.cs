@@ -10,9 +10,8 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        if (LocalAuthService.HasAccount())
-            MainPage = new NavigationPage(new LoginPage());
-        else
-            MainPage = new NavigationPage(new SignupPage());
+        MainPage = LocalAuthService.HasSession()
+            ? new AppShell()
+            : new NavigationPage(new LoginPage());
     }
 }

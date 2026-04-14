@@ -8,14 +8,17 @@
     <TabBar>
         <ShellContent
             Title="Todos"
+            Icon="todo.svg"
             ContentTemplate="{DataTemplate views:TodoPage}" />
 
         <ShellContent
             Title="Completed"
+            Icon="completed.svg"
             ContentTemplate="{DataTemplate views:CompletedPage}" />
 
         <ShellContent
             Title="Profile"
+            Icon="profile.svg"
             ContentTemplate="{DataTemplate views:ProfilePage}" />
     </TabBar>
 </Shell>

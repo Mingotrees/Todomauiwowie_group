@@ -11,19 +11,27 @@ public partial class LoginPage : ContentPage
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        string usernameOrEmail = UsernameOrEmailEntry.Text ?? "";
+        string email = UsernameOrEmailEntry.Text ?? "";
         string password = PasswordEntry.Text ?? "";
 
-        bool isValid = await LocalAuthService.LoginAsync(usernameOrEmail, password);
-
-        if (isValid)
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
+            await DisplayAlert("Error", "Please enter email and password.", "OK");
+            return;
+        }
+
+        var result = await AuthApiService.SignInAsync(email, password);
+
+        if (result.IsSuccess)
+        {
+            LocalAuthService.SaveSession(result.UserId, result.FirstName, result.LastName, result.Email);
+
             await DisplayAlert("Success", "Login successful.", "OK");
             Application.Current!.MainPage = new AppShell();
         }
         else
         {
-            await DisplayAlert("Error", "Invalid username/email or password.", "OK");
+            await DisplayAlert("Error", result.Message, "OK");
         }
     }
 

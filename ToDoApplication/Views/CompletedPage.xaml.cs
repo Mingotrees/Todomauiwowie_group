@@ -5,8 +5,9 @@ namespace ToDoApplication.Views;
 
 public partial class CompletedPage : ContentPage
 {
-    public List<TodoItem> CompletedItems =>
-        DummyData.TodoItems.Where(t => t.status == "Completed").ToList();
+    private List<TodoItem> _completedItems = new();
+
+    public List<TodoItem> CompletedItems => _completedItems;
 
     public CompletedPage()
     {
@@ -14,35 +15,53 @@ public partial class CompletedPage : ContentPage
         BindingContext = this;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        RefreshList();
+        await RefreshListAsync();
     }
 
-    private void RefreshList()
+    private async Task RefreshListAsync()
     {
+        int userId = LocalAuthService.GetCurrentUserId();
+        if (userId > 0)
+            _completedItems = await TodoApiService.GetItemsAsync("inactive", userId);
+        else
+            _completedItems = new List<TodoItem>();
+
         CompletedCollection.ItemsSource = null;
         CompletedCollection.ItemsSource = CompletedItems;
     }
 
-    private void OnUndoClicked(object sender, EventArgs e)
+    private async void OnUndoClicked(object sender, EventArgs e)
     {
         if (sender is Button button &&
             button.CommandParameter is TodoItem item)
         {
-            item.status = "Pending";
-            RefreshList();
+            var result = await TodoApiService.ChangeItemStatusAsync(item.item_id, false);
+            if (!result.IsSuccess)
+            {
+                await DisplayAlert("Error", result.Message, "OK");
+                return;
+            }
+
+            await RefreshListAsync();
         }
     }
 
-    private void OnDeleteClicked(object sender, EventArgs e)
+    private async void OnDeleteClicked(object sender, EventArgs e)
     {
         if (sender is ImageButton imageButton &&
             imageButton.CommandParameter is TodoItem item)
         {
-            DummyData.TodoItems.Remove(item);
-            RefreshList();
+            var result = await TodoApiService.DeleteItemAsync(item.item_id);
+            if (!result.IsSuccess)
+            {
+                await DisplayAlert("Error", result.Message, "OK");
+                return;
+            }
+
+            await RefreshListAsync();
         }
     }
 }
